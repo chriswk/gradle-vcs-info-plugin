@@ -26,7 +26,8 @@ repositories {
 dependencies {
 	groovy localGroovy()
 	compile gradleApi()
-	compile 
+	compile 'org.eclipse.jgit:org.eclipse.jgit:2.0.0.201206130900-r'
+	compile 'org.eclipse.jgit:org.eclipse.jgit.ui:2.0.0.201206130900-r'
 }
 
 githubPages {
