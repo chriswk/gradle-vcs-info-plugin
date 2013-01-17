@@ -14,6 +14,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'signing'
 apply plugin: 'github-pages'
+apply plugin: 'maven'
 
 group = 'com.chriswk'
 description = "VCS Info plugin for Gradle"
@@ -66,12 +67,12 @@ artifacts {
 uploadArchives {
 	repositories.mavenDeployer {
 		name = 'Sonatype OSS'
-		repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+		/**repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
 			authentication(userName:sonatypeUserName, password:sonatypePassword)
 		}
 		snapshotRepository(url:'https://oss.sonatype.org/content/repositories/snapshots') {
 			authentication(userName:sonatypeUserName, password:sonatypePassword)
-		}
+		}**/
 
 		beforeDeployment { signing.signPom it }
 
