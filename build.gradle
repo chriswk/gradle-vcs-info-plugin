@@ -1,0 +1,101 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			url 'https://oss.sonatype.org/content/groups/public/'
+		}
+	}
+	dependencies { 
+		classpath 'org.ajoberstar:gradle-git:0.2.3' 
+	}
+}
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'signing'
+apply plugin: 'github-pages'
+
+group = 'com.chriswk'
+description = "VCS Info plugin for Gradle"
+version = "0.1"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	groovy localGroovy()
+	compile gradleApi()
+	compile 
+}
+
+githubPages {
+	repoUri = 'git@github.com:chriswk/gradle-vcs-info-plugin.git'
+	pages {
+		from(javadoc.outputs.files) {
+			into 'docs/javadoc'
+		}
+		from(groovydoc.outputs.files) {
+			into 'docs/groovydoc'
+		}
+	}
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+	classifier = 'javadoc'
+	from javadoc.outputs.files
+}
+
+task groovydocJar(type: Jar) {
+	classifier = 'groovydoc'
+	from groovydoc.outputs.files
+}
+
+artifacts {
+	archives sourcesJar
+	archives javadocJar
+	archives groovydocJar
+}
+
+uploadArchives {
+	repositories.mavenDeployer {
+		name = 'Sonatype OSS'
+		repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+			authentication(userName:sonatypeUserName, password:sonatypePassword)
+		}
+		snapshotRepository(url:'https://oss.sonatype.org/content/repositories/snapshots') {
+			authentication(userName:sonatypeUserName, password:sonatypePassword)
+		}
+
+		beforeDeployment { signing.signPom it }
+
+		pom.project {
+			name project.name
+			description project.description
+			url 'http://github.com/chriswk/gradle-vcs-info-plugin'
+			licenses {
+				license {
+					name 'The Apache Software License, Version 2.0'
+					url 'http://www.apache.org/licenses/LICENSE-2.0'
+				}
+			}
+			developers {
+				developer {
+					id 'chriswk'
+					name 'Christopher Kolstad'
+					email 'christopher.kolstad@gmail.com'
+				}
+			}
+			scm {
+				connection 'git://github.com/chriswk/gradle-vcs-info-plugin.git'
+				developerConnection 'git@github.com:chriswk/gradle-vcs-info-plugin.git'
+				url 'http://github.com/chriswk/gradle-vcs-info-plugin'
+			}
+		}
+	}
+}
